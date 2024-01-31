@@ -2,28 +2,43 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/LucasAndFlores/user_api/config"
+	"github.com/LucasAndFlores/user_api/database"
+	"github.com/LucasAndFlores/user_api/routes"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
-
 
 var PORT = fmt.Sprintf(":%v", os.Getenv("PORT"))
 
 func main() {
-    err := config.LoadEnvVariables()
-    
-    if err != nil {
-        panic(err)
-    }
+	err := config.LoadEnvVariables()
 
-    app := fiber.New()
+	if err != nil {
+		log.Fatalf("An error occurred when tried to load env variables: %v", err)
+	}
 
-    app.Get("/", func(c *fiber.Ctx) error {
-        return c.SendString("ok")
-    })
+	db, err := database.ConnectDatabase()
 
-    
-    app.Listen(PORT)
+	if err != nil {
+		log.Fatalf("An error occurred when tried to connect to database: %v", err)
+	}
+
+	app := SetupApp(db)
+
+	app.Listen(PORT)
+}
+
+func SetupApp(db *gorm.DB) *fiber.App {
+
+	app := fiber.New()
+
+	router := app.Group("/api")
+
+	routes.SetupUserRoutes(router, db)
+
+	return app
 }

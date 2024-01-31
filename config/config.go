@@ -3,11 +3,11 @@ package config
 import "github.com/joho/godotenv"
 
 func LoadEnvVariables() error {
-    err := godotenv.Load()
+	err := godotenv.Load()
 
-    if err != nil {
-        return err
-    }
+	if err != nil {
+		return err
+	}
 
-    return nil
+	return nil
 }
