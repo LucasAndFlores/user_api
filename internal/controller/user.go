@@ -24,11 +24,10 @@ func (c *UserController) HandleCreateUser(fi *fiber.Ctx) error {
 	err := fi.BodyParser(&userDTO)
 
 	if err != nil {
-		fi.Status(fiber.StatusInternalServerError)
+		return fi.Status(fiber.StatusInternalServerError).JSON(map[string]string{"message": "internal server error"})
 	}
 
 	status, body := c.service.Create(fi.Context(), userDTO)
 
-	fi.Status(status).JSON(body)
-	return nil
+	return fi.Status(status).JSON(body)
 }
