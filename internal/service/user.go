@@ -33,7 +33,11 @@ func (s *UserService) Create(ctx context.Context, user dto.UserDTO) (int, respon
 		return fiber.StatusConflict, responseBody{"message": "user already exists"}
 	}
 
-	userModel := user.ConvertToUserModel()
+	userModel, err := user.ConvertToUserModel()
+
+	if err != nil {
+		return fiber.StatusInternalServerError, responseBody{"message": "internal server error"}
+	}
 
 	err = s.repo.Insert(ctx, userModel)
 
