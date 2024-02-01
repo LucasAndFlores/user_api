@@ -10,6 +10,8 @@ import (
 
 type responseBody = map[string]interface{}
 
+const INTERNAL_SERVER_ERROR_MESSAGE =  "internal server error"
+
 type Service interface {
 	Create(context.Context, dto.UserDTO) (int, responseBody)
 }
@@ -26,7 +28,7 @@ func (s *UserService) Create(ctx context.Context, user dto.UserDTO) (int, respon
 	exists, err := s.repo.CheckIfUserExist(ctx, user)
 
 	if err != nil {
-		return fiber.StatusInternalServerError, responseBody{"message": "internal server error"}
+		return fiber.StatusInternalServerError, responseBody{"message": INTERNAL_SERVER_ERROR_MESSAGE}
 	}
 
 	if exists {
@@ -36,13 +38,13 @@ func (s *UserService) Create(ctx context.Context, user dto.UserDTO) (int, respon
 	userModel, err := user.ConvertToUserModel()
 
 	if err != nil {
-		return fiber.StatusInternalServerError, responseBody{"message": "internal server error"}
+		return fiber.StatusInternalServerError, responseBody{"message": INTERNAL_SERVER_ERROR_MESSAGE}
 	}
 
 	err = s.repo.Insert(ctx, &userModel)
 
 	if err != nil {
-		return fiber.StatusInternalServerError, responseBody{"message": "internal server error"}
+		return fiber.StatusInternalServerError, responseBody{"message": INTERNAL_SERVER_ERROR_MESSAGE}
 	}
 
 	return fiber.StatusCreated, responseBody{"message": "user successfully created"}
