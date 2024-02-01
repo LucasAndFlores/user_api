@@ -39,7 +39,7 @@ func (s *UserService) Create(ctx context.Context, user dto.UserDTO) (int, respon
 		return fiber.StatusInternalServerError, responseBody{"message": "internal server error"}
 	}
 
-	err = s.repo.Insert(ctx, userModel)
+	err = s.repo.Insert(ctx, &userModel)
 
 	if err != nil {
 		return fiber.StatusInternalServerError, responseBody{"message": "internal server error"}

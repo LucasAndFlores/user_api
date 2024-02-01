@@ -14,7 +14,7 @@ type UserRepository struct {
 }
 
 type Repository interface {
-	Insert(context.Context, model.User) error
+	Insert(context.Context, *model.User) error
 	CheckIfUserExist(context.Context, dto.UserDTO) (bool, error)
 }
 
@@ -24,8 +24,8 @@ func NewUserRepository(d *gorm.DB) Repository {
 	}
 }
 
-func (r *UserRepository) Insert(ctx context.Context, user model.User) error {
-	result := r.db.Create(&user)
+func (r *UserRepository) Insert(ctx context.Context, user *model.User) error {
+	result := r.db.Create(user)
 
 	if result.Error != nil {
 		return result.Error
