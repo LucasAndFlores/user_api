@@ -6,6 +6,7 @@ import (
 
 	"github.com/LucasAndFlores/user_api/internal/dto"
 	"github.com/LucasAndFlores/user_api/internal/model"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -16,6 +17,7 @@ type UserRepository struct {
 type Repository interface {
 	Insert(context.Context, *model.User) error
 	CheckIfUserExist(context.Context, dto.UserDTO) (bool, error)
+	FindByExternalId(context.Context, uuid.UUID) (*model.User, error)
 }
 
 func NewUserRepository(d *gorm.DB) Repository {
@@ -48,4 +50,16 @@ func (r *UserRepository) CheckIfUserExist(ctx context.Context, user dto.UserDTO)
 	}
 
 	return true, nil
+}
+
+func (r *UserRepository) FindByExternalId(ctx context.Context, externalId uuid.UUID) (*model.User, error) {
+	var user model.User
+
+	err := r.db.Find(&user, "external_id = ?", externalId).Error
+
+	if err != nil {
+		return &model.User{}, err
+	}
+
+	return &user, nil
 }

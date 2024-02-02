@@ -16,6 +16,13 @@ type UserDTO struct {
 	DateOfBirth string `json:"date_of_birth" validate:"required"`
 }
 
+func (d *UserDTO) ConvertToUserDTO(u *model.User) {
+	d.Name = u.Name
+	d.Email = u.Email
+	d.ExternalId = u.ExternalId.String()
+	d.DateOfBirth = u.DateOfBirth.String()
+}
+
 func (d *UserDTO) ConvertToUserModel() (model.User, error) {
 	uuid, err := uuid.Parse(d.ExternalId)
 

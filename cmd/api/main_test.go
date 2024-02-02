@@ -320,3 +320,56 @@ func TestCreateUserInvalidRequestScenario(t *testing.T) {
 	}
 
 }
+
+func TestFindUserByIdSuccessfulScenario(t *testing.T) {
+	tApp := runTestServer()
+
+	createdUser := map[string]interface{}{
+		"name":          "test user",
+		"email":         "test_create@example.com",
+		"id":            "d553a9de-eff6-4b3d-9c70-8c9266692782",
+		"date_of_birth": "1990-01-01T00:00:00Z",
+	}
+
+	request, err := json.Marshal(createdUser)
+
+	if err != nil {
+		t.Fatalf("Failed to marshal paylod to JSON: %v", err)
+	}
+
+	reqCreate := httptest.NewRequest("POST", "/api/save", bytes.NewReader(request))
+
+	reqCreate.Header.Set("content-type", "application/json")
+
+	_, err = tApp.Test(reqCreate, -1)
+
+	if err != nil {
+		t.Fatalf("Failed when trying to execute fiber.Test to create user: %v", err)
+	}
+
+	getUrl := fmt.Sprintf("/api/%v", createdUser["id"])
+
+	req := httptest.NewRequest("GET", getUrl, nil)
+
+	res, err := tApp.Test(req, -1)
+
+	if err != nil {
+		t.Fatalf("Failed when trying to execute fiber.Test: %v", err)
+	}
+
+	value, err := io.ReadAll(res.Body)
+
+	if err != nil {
+		t.Fatalf("Failed when trying to execute io.ReadAll: %v", err)
+	}
+
+	if res.StatusCode != fiber.StatusOK {
+		t.Fatalf("The result is different from expected. Result: %v. Expected: %v", res.StatusCode, fiber.StatusOK)
+	}
+
+	expectedBody := "{\"user\":{\"name\":\"test user\",\"email\":\"test_create@example.com\",\"id\":\"d553a9de-eff6-4b3d-9c70-8c9266692782\",\"date_of_birth\":\"1990-01-01 01:00:00 +0100 CET\"}}"
+
+	if string(value) != expectedBody {
+		t.Fatalf("The body result is different from expected. Result: %v. Expected: %v", string(value), expectedBody)
+	}
+}
