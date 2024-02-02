@@ -1,5 +1,8 @@
 run-integration-test:
-	go test ./cmd/... -v
+	go test -coverpkg=./... -coverprofile=coverage.out ./... -v
+
+coverage-report:
+	go tool cover -html=coverage.out
 
 format:
 	gofmt -w ./cmd ./config ./internal ./routes ./database
