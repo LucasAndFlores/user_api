@@ -373,3 +373,56 @@ func TestFindUserByIdSuccessfulScenario(t *testing.T) {
 		t.Fatalf("The body result is different from expected. Result: %v. Expected: %v", string(value), expectedBody)
 	}
 }
+
+type FindUserByIdErrorTest struct {
+	getUrl             string
+	expectedStatusCode int
+	expectedBody       string
+}
+
+func TestFindUserByIdErrorScenario(t *testing.T) {
+	tApp := runTestServer()
+
+	testCases := []FindUserByIdErrorTest{
+		{
+			getUrl:             "/api/111111111111",
+			expectedStatusCode: fiber.StatusBadRequest,
+			expectedBody:       "{\"message\":\"unable to parse the id\"}",
+		},
+		{
+			getUrl:             "/api/testestestest",
+			expectedStatusCode: fiber.StatusBadRequest,
+			expectedBody:       "{\"message\":\"unable to parse the id\"}",
+		},
+		{
+			getUrl:             "/api/8269b23f-1417-4f9d-9662-83b609a4e6dd",
+			expectedStatusCode: fiber.StatusNotFound,
+			expectedBody:       "{\"message\":\"user not found\"}",
+		},
+	}
+
+	for i, value := range testCases {
+		req := httptest.NewRequest("GET", value.getUrl, nil)
+
+		res, err := tApp.Test(req, -1)
+
+		if err != nil {
+			t.Fatalf("Failed when trying to execute fiber.Test: %v", err)
+		}
+
+		rBody, err := io.ReadAll(res.Body)
+
+		if err != nil {
+			t.Fatalf("Failed when trying to execute io.ReadAll: %v", err)
+		}
+
+		if res.StatusCode != value.expectedStatusCode {
+			t.Fatalf("Result is different from expected. Result: %v. Expected: %v. Test case index: %v", res.StatusCode, value.expectedStatusCode, i)
+		}
+
+		if string(rBody) != value.expectedBody {
+			t.Fatalf("The body result is different from expected. Result: %v. Expected: %v. Test case index: %v", string(rBody), value.expectedBody, i)
+		}
+	}
+
+}
