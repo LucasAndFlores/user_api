@@ -158,7 +158,7 @@ func TestCreateUserErrorScenario(t *testing.T) {
 				"id":            "2dd002d0-dd56-4491-b77e-61b7dcce7123",
 				"date_of_birth": "1990-01-01T00:00:00Z",
 			},
-			expectedStatusCode: 201,
+			expectedStatusCode: fiber.StatusCreated,
 			expectedBody:       "{\"message\":\"user successfully created\"}",
 		},
 		{
@@ -168,7 +168,7 @@ func TestCreateUserErrorScenario(t *testing.T) {
 				"id":            "3a47386e-56d4-4bd8-a015-c2b8bdf646f8",
 				"date_of_birth": "1990-01-01T00:00:00Z",
 			},
-			expectedStatusCode: 409,
+			expectedStatusCode: fiber.StatusConflict,
 			expectedBody:       "{\"message\":\"user already exists\"}",
 		},
 		{
@@ -178,7 +178,7 @@ func TestCreateUserErrorScenario(t *testing.T) {
 				"id":            "2dd002d0-dd56-4491-b77e-61b7dcce7123",
 				"date_of_birth": "1990-01-01T00:00:00Z",
 			},
-			expectedStatusCode: 409,
+			expectedStatusCode: fiber.StatusConflict,
 			expectedBody:       "{\"message\":\"user already exists\"}",
 		},
 	}
@@ -230,7 +230,7 @@ func TestCreateUserInvalidRequestScenario(t *testing.T) {
 				"id":            "497980c5-dac6-4af7-ac56-a7a0d2dad51a",
 				"date_of_birth": "1990-01-01T00:00:00Z",
 			},
-			expectedStatusCode: 422,
+			expectedStatusCode: fiber.StatusUnprocessableEntity,
 			expectedBody:       "[{\"Field\":\"Name\",\"Tag\":\"required\",\"Value\":\"\"}]",
 		},
 		{
@@ -240,7 +240,7 @@ func TestCreateUserInvalidRequestScenario(t *testing.T) {
 				"id":            "3a47386e-56d4-4bd8-a015-c2b8bdf646f8",
 				"date_of_birth": "1990-01-01T00:00:00Z",
 			},
-			expectedStatusCode: 422,
+			expectedStatusCode: fiber.StatusUnprocessableEntity,
 			expectedBody:       "[{\"Field\":\"Email\",\"Tag\":\"email\",\"Value\":\"\"}]",
 		},
 		{
@@ -250,7 +250,7 @@ func TestCreateUserInvalidRequestScenario(t *testing.T) {
 				"id":            "",
 				"date_of_birth": "1990-01-01T00:00:00Z",
 			},
-			expectedStatusCode: 422,
+			expectedStatusCode: fiber.StatusUnprocessableEntity,
 			expectedBody:       "[{\"Field\":\"ExternalId\",\"Tag\":\"uuid\",\"Value\":\"\"}]",
 		},
 		{
@@ -260,7 +260,7 @@ func TestCreateUserInvalidRequestScenario(t *testing.T) {
 				"id":            "testestesteststes",
 				"date_of_birth": "1990-01-01T00:00:00Z",
 			},
-			expectedStatusCode: 422,
+			expectedStatusCode: fiber.StatusUnprocessableEntity,
 			expectedBody:       "[{\"Field\":\"ExternalId\",\"Tag\":\"uuid\",\"Value\":\"\"}]",
 		},
 		{
@@ -270,7 +270,7 @@ func TestCreateUserInvalidRequestScenario(t *testing.T) {
 				"id":            "3a47386e-56d4-4bd8-a015-c2b8bdf646f8",
 				"date_of_birth": "",
 			},
-			expectedStatusCode: 422,
+			expectedStatusCode: fiber.StatusUnprocessableEntity,
 			expectedBody:       "[{\"Field\":\"DateOfBirth\",\"Tag\":\"required\",\"Value\":\"invalid date format\"},{\"Field\":\"DateOfBirth\",\"Tag\":\"required\",\"Value\":\"\"}]",
 		},
 		{
@@ -280,7 +280,7 @@ func TestCreateUserInvalidRequestScenario(t *testing.T) {
 				"id":            "3a47386e-56d4-4bd8-a015-c2b8bdf646f8",
 				"date_of_birth": "1990-01-01",
 			},
-			expectedStatusCode: 422,
+			expectedStatusCode: fiber.StatusUnprocessableEntity,
 			expectedBody:       "[{\"Field\":\"DateOfBirth\",\"Tag\":\"required\",\"Value\":\"invalid date format\"}]",
 		},
 	}
