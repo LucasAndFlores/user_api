@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/LucasAndFlores/user_api/internal/controller"
-	"github.com/LucasAndFlores/user_api/internal/dto"
+	"github.com/LucasAndFlores/user_api/internal/middleware"
 	"github.com/LucasAndFlores/user_api/internal/repository"
 	"github.com/LucasAndFlores/user_api/internal/service"
 	"github.com/gofiber/fiber/v2"
@@ -15,6 +15,6 @@ func SetupUserRoutes(api fiber.Router, db *gorm.DB) {
 
 	userController := controller.NewUserController(service)
 
-	api.Post("/save", dto.ValidateUserRequestBody, userController.HandleCreateUser)
+	api.Post("/save", middleware.ValidateUserRequestBody, userController.HandleCreateUser)
 	api.Get("/:id", userController.HandleFindUserByExternalId)
 }
